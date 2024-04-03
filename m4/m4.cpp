@@ -26,11 +26,9 @@ typedef struct
 //function to read through all files and parse info about source, destination, fare and corresponding airline
 int processFlight(char[], FlightData [], int*);
 //function to display entry of each source  - destination, fare and flight name
-int displayLeastFareDetails(char[]);
+int displayLeastFareDetails(FlightData [], int*);
 //function to extract info from each flight
 int parseLine(char*, char*, int*, char*);
-//my own function
-char removeNewline(char[]);
 //return statuses
 const int kReturnError = -1;
 const int kReturnSuccess = 0;
@@ -38,10 +36,9 @@ const int kReturnSuccess = 0;
 const int kMaxLinesToRead = 100;
 const int kMaxNumChar = 40;
 
-
-int main(int argc, char* argv[])
+int main(void)
 {
-    char currentFlight[kMaxNumChar] = { 0 }; 
+    char currentAirline[kMaxNumChar] = { 0 }; 
     //keep track of lines read, also used to not read over 100 datasets
     int totalLinesRead = 0;
 
@@ -57,75 +54,40 @@ int main(int argc, char* argv[])
 
     //find out if this is the proper while statment, i want to read no more than 100 lines
     //maybe could use for loop
-    while (fgets(currentFlight, kMaxNumChar, pFlights) != NULL || totalLinesRead < kMaxLinesToRead)
+    while (fgets(currentAirline, kMaxNumChar, pFlights) != NULL || totalLinesRead < kMaxLinesToRead)
     {
-        //can i use currentFlight[strcspn(currentFlight, "\n")] = '\0';
-        removeNewline(currentFlight);
+        //removeNewline
+        //should i use strcspn or strrchr
+        currentAirline[strcspn(currentAirline, "\n")] = '\0';
 
-        //new draft
-        if (processFlight(currentFlight, flightDataset, &totalLinesRead) == kReturnError)
+        //the currentAirline will be the filename to be opened, the dataset array will have flight info
+        //appended to each index until 100, the totalLinesRead will be used to keep track of this
+        if (processFlight(currentAirline, flightDataset, &totalLinesRead) == kReturnError)
         {
-            printf("Error processing %s\n", currentFlight);
+            printf("Error processing file: %s\n", currentAirline);
             //should the program cancel?
             return kReturnError;
         }
 
-        /*
-        //previous draft
-        FILE* pCurrentFlight = NULL;
-        if ((pCurrentFlight = fopen(currentFlight, "r")) == NULL)
-        {
-            printf("Cannot open to write to %s\n", currentFlight);
-            return kReturnError;
-        }
-        */
-        
+    }
 
-
+    if (displayLeastFareDetails(flightDataset, &totalLinesRead) == kReturnError)
+    {
+        printf("Error Displaying Dataset: %s\n", currentAirline);
+        //should the program cancel?
+        return kReturnError;
     }
 
     if (ferror(pFlights))
     {
-        printf("Error reading flights.txt\n");
+        printf("Error Reading flights.txt\n");
         return kReturnError;
     }
 
-    /*
-    //does this for loop need to have a different stop value or can i use while loop
-    for (int readFileLine = 0; readFileLine < kMaxLinesToRead; readFileLine++)
-    {
-        if (fgets(currentFlight, kMaxNumChar, pFlights) == NULL)
-        {
-            printf("Unable to get line from flights.txt\n");
-            return kReturnError;
-        }
-        //circle back to this error check
-        if (feof(pFlights))
-        {
-            totalLinesRead = readFileLine;
-            break;
-        }
 
-        //do i need to remove newline?
-        size_t length = strlen(currentFlight);
-        //use the length (of string) - 1 to index the last element of the string
-        if (currentFlight[length - 1] == '\n')
-        {
-            return currentFlight[length - 1] = '\0';
-        }
+    //dont forget to close flights.txt
 
-        //create file pointer to open a file to a specific airline to read its datasets
-
-
-    }
-    */
-
-    //i assume that process flight is also called from main
-    
-
-    //displayLeastFareDetails() is called from main
-
-    return kReturnSuccess;
+return kReturnSuccess;
 }
 
 // FUNCTION: processFlight(char[])
@@ -133,55 +95,91 @@ int main(int argc, char* argv[])
 // PARAMETERS: filename, array of struct (to hold the parse value of flight data), 
 // reference to total count (i.e. total lines read)
 // RETURNS: int (a status of success or fail for processing the file) ** display in main
-int processFlight(char currentFlight[], FlightData individualFlight[], int* linesRead)
+int processFlight(char airlineFile[], FlightData individualFlight[], int* linesRead)
 {
+    //takes in the raw dataset before parsing
     char rawFlightData[kMaxNumChar] = { 0 };
 
     FILE* pCurrentFlight = NULL;
-    if ((pCurrentFlight = fopen(currentFlight, "r")) == NULL)
+    if ((pCurrentFlight = fopen(airlineFile, "r")) == NULL)
     {
-        printf("Cannot open to write to %s\n", currentFlight);
+        printf("Error Processing File %s\n", airlineFile);
         return kReturnError;
     }
 
-    while (fgets(rawFlightData, kMaxNumChar, pCurrentFlight) != NULL)
+    while (fgets(rawFlightData, kMaxNumChar, pCurrentFlight) != NULL && *linesRead < kMaxLinesToRead)
     {
-        removeNewline(rawFlightData);
+        //remove newline
+        rawFlightData[strcspn(rawFlightData, "\n")] = '\0';
         //processFlight(rawFlightData, flightDataset, &totalLinesRead);
         char currentSource[kMaxNumChar] = { 0 };
-        char currentDestination[kMaxNumChar] = { 0 }; 
-        char currentFare = 0;
-        //need to call parseLine function in order to process flights
-        /*if parse line success
-        * strcpy individualFlight[*linesRead].source, currentSource);
-        * strcpy individualFlights[*linesRead].destination, currentdestination);
-        * individualFlight[*linesRead].fare = currentFare;
-        * strcpy DO I NEED TO CREATE AN AIRLINE NAME FIELD
-        * 
-        * else
-        * return print statement and kReturnError
-        * error should display the line at which the error occurred
-        */
-        linesRead++;
+        char currentDestination[kMaxNumChar] = { 0 };
+        int currentFare = 0;
+        //return value of parseline() to be used in case switch
+        int returnValue = 0;
 
-        //close currentFlight file and check for error
+        //getting the airline name to put into the struct
+        char airlineName[25] = { 0 };
+        if (sscanf(airlineFile, "%[a-zA-Z ]", airlineName) == NULL)
+        {
+            //should this be the error?
+            return kReturnError;
+        }
+        //should this be how i check for blank line?
+        if (strcmp(airlineName, " ") == kReturnSuccess)
+        {
+            //skip blank lines
+            continue;
+        }
+
+
+        //check for return value from parseline(), will either be a specific error or success (will be able to 
+        // send parsed data to the struct
+        switch (returnValue = (parseLine(currentSource, currentDestination, &currentFare, rawFlightData))) {
+            //see later if can use kreturnerror and ksuccesserror for case switch
+        case -1:
+            printf("Error Processing File %s line: %s\n", airlineFile, rawFlightData);
+            continue;
+        case 0:
+            strcpy(individualFlight[*linesRead].airlineName, airlineName);
+            strcpy(individualFlight[*linesRead].sourceLocation, currentSource);
+            strcpy(individualFlight[*linesRead].destLocation, currentDestination);
+            individualFlight[*linesRead].farePrice = currentFare;
+            continue;
+        case 1:
+            //blank line
+            continue;
+        case 2:
+            printf("Missing Dash in %s\n", rawFlightData);
+            continue;
+        case 3:
+            printf("Missing Comma in %s\n", rawFlightData);
+            continue;
+        }
+        //increment the value that's being pointed to
+        (*linesRead)++;
     }
 
-    
-
+    if (fclose(pCurrentFlight) == EOF)
+    {
+        printf("Error Closing File %s\n", airlineFile);
+        //i don't think the whole program should end
+    }
 
     return kReturnSuccess;
 }
 
-// FUNCTION: displayLeastFareDetails(char[])
+// FUNCTION: displayLeastFareDetails()
 // DESCRIPTION: displays the entry of each source-destination and corresponding fare and
 // flight name where lowest priced fare is found. If only one entry of source-destination is found
 // then it displays that data in proper format. Displays results in user friendly way.
 // Only displays one single entry for source-destination
 // PARAMETERS: 
 // RETURNS: 
-int displayLeastFareDetails(char[])
+int displayLeastFareDetails(FlightData individualFlight[], int* linesRead)
 {
+    //maybe use strcmpi()
+
 
     return kReturnSuccess;
 }
@@ -195,32 +193,41 @@ int displayLeastFareDetails(char[])
 // RETURNS: int (status indicating if parsing of airline was success or fail)
 int parseLine(char* startLocation, char* endLocation, int* priceOfFare, char* fileLineRead)
 {
+    //return values for process flights to print
+    const int kBlankLine = 1;
+    //could even have a return value for if both comma and dash were missing
+    const int kMissingDash = 2;
+    const int kMissingComma = 3;
+    //should i change max char to read to maybe 25
+    char currentLineRead[kMaxNumChar] = { 0 };
+    strcpy(currentLineRead, fileLineRead);
+    //used to ensure that the file is properly formatted
+    const char kDash = '-';
+    const char kComma = ',';
 
-    //don't forget need to check for missing commas or dashes
-
-    //use a search function maybe fgetc? 
-
-    //unneccesary
-    /*
-    FlightData singleFlight = { 0 };
-    //look into using ->
-    *singleFlight.destLocation = *endLocation;
-    *singleFlight.sourceLocation = *startLocation;
-    //why doesn't the fareprice need a *?
-    singleFlight.farePrice = *priceOfFare;
-    */
+    //if the file line is blank then it will be skipped in processFlight()
+    if (strcmp(currentLineRead, " ") == NULL)
+    {
+        return kBlankLine;
+    }
+    //check for missing dash
+    if ((strchr(currentLineRead, kDash)) == NULL)
+    {
+        return kMissingDash;
+    }
+    //check for missing comma
+    if ((strchr(currentLineRead, kComma)) == NULL)
+    {
+        return kMissingComma;
+    }
+    
+    //Now parse
+    //should i try to use fscanf? also a-zA-Z[space] for this flag stuff
+    if (sscanf(currentLineRead, "%[^-], %[^,], %d", startLocation, endLocation, priceOfFare) == NULL)
+    {
+        return kReturnError;
+    }
 
     return kReturnSuccess;
 }
 
-char removeNewline(char nameInput[])
-{
-    size_t length = strlen(nameInput);
-
-    //use the length (of string) - 1 to index the last element of the string
-    if (nameInput[length - 1] == '\n')
-    {
-        return nameInput[length - 1] = '\0';
-    }
-
-}
