@@ -1,0 +1,4 @@
+Toronto-New York, 200
+Toronto-Los Angeles, 400
+New York-London, 600
+Los Angeles-Honolulu, 800

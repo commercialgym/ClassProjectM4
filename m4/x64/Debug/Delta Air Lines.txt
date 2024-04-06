@@ -1,0 +1,4 @@
+Atlanta-New York, 200
+New York-Paris, 700
+Los Angeles-Tokyo, 900
+Seattle-London, 800

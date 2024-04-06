@@ -1,0 +1,39 @@
+Toronto-Vancouver, 350
+Montreal-Paris, 600
+Vancouver-Tokyo, 800
+Toronto-London, 500
+Toronto-Vancouver, 3500
+Montreal-Paris, 6000
+Vancouver-Tokyo, 8000
+Toronto-London, 5000
+
+Toronto-Vancouver, 350
+Montreal-Paris, 600
+Vancouver-Tokyo, 800
+Toronto-London, 500
+
+
+Toronto-Vancouver, 350
+Montreal-Paris, 600
+Vancouver-Tokyo, 800
+Toronto-London, 500
+
+Toronto-Vancouver, 350
+Montreal-Paris, 600
+Vancouver-Tokyo, 800
+Toronto-London, 500
+
+Toronto-Vancouver, 350
+Montreal-Paris, 600
+Vancouver-Tokyo, 800
+Toronto-London, 500
+
+Toronto-Vancouver, 350
+Montreal-Paris, 600
+Vancouver-Tokyo, 800
+Toronto-London, 500
+
+Toronto-Vancouver, 350
+Montreal-Paris, 600
+Vancouver-Tokyo, 800
+Toronto-London, 500

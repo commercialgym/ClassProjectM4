@@ -1,0 +1,8 @@
+Toronto-New York, 200
+Toronto-Los Angeles, 400
+New York-London, 600
+Los Angeles-Honolulu, 800
+Singapore-Tokyo, 900
+Singapore-Sydney, 1000
+Singapore-London, 800
+Tokyo-New York, 500

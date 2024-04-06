@@ -1,0 +1,4 @@
+Singapore-Tokyo, 500
+Singapore-Sydney, 600
+Singapore-London, 700
+Tokyo-New York, 1000

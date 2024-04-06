@@ -1,0 +1,4 @@
+New York-Los Angeles, 500
+Chicago-Miami, 300
+Los Angeles-Tokyo 1000
+Dallas-San Francisco, 400

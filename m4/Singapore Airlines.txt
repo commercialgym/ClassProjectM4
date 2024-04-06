@@ -1,0 +1,37 @@
+Singapore-Tokyo, 500
+Singapore-Sydney, 600
+Singapore-London, 700
+Tokyo-New York, 1000
+Singapore-Tokyo, 200
+Singapore-Sydney, 600
+Singapore-London, 800
+Tokyo-New York, 1200
+Los AngelesTokyo, 200
+Singapore-Tokyo, 50
+Singapore-Sydney, 60
+Singapore-London, 70
+Tokyo-New York, 1000
+Singapore-Tokyo, 500
+Singapore-Sydney, 600
+Singapore-London, 700
+Tokyo-New York, 1000
+Singapore-Tokyo, 500
+Singapore-Sydney, 600
+Singapore-London, 700
+Tokyo-New York, 1000
+Singapore-Tokyo, 500
+Singapore-Sydney, 600
+Singapore-London, 700
+Tokyo-New York, 10
+Singapore-Tokyo, 500
+Singapore-Sydney, 600
+Singapore-London, 700
+Tokyo-New York, 1000
+Singapore-Tokyo, 500
+Singapore-Sydney, 600
+Singapore-London, 700
+Tokyo-New York, 1000
+Singapore-Tokyo, 500
+Singapore-Sydney, 600
+Singapore-London, 700
+Tokyo-New York, 1000

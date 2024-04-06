@@ -1,0 +1,8 @@
+Seattle-Anchorage, 300
+Anchorage-Honolulu, 700
+Seattle-Los Angeles, 400
+Los Angeles-Mexico City, 600
+Atlanta-New York, 150
+New York-Paris, 900
+Los Angeles-Tokyo, 1000
+Seattle-London, 700
